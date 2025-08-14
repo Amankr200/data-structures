@@ -12,4 +12,3 @@ public:
         return maxChar == ' ' ? "" : string(3, maxChar);
     }
 };
-
