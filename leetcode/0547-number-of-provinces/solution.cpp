@@ -1,45 +1,39 @@
 class Solution {
-public:
- 
-
-int findCircleNum(vector<vector<int>>& isConnected) {
-    int n = isConnected.size();
-    vector<vector<int>> adj(n);
-
-    // matrix → adjacency list
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            if (isConnected[i][j] == 1 && i != j) {
-                adj[i].push_back(j);
+private:
+    void dfs(int node, vector<vector<int>> &adj, vector<int> &vis) {
+        vis[node] = 1;
+        for(int v : adj[node]) {
+            if(!vis[v]) {
+                dfs(v, adj, vis);
             }
         }
     }
 
-    vector<bool> visited(n, false);
-    int provinces = 0;
+public:
+    int findCircleNum(vector<vector<int>>& isConnected) {
+        int v = isConnected.size();
 
-    for (int i = 0; i < n; i++) {
-        if (!visited[i]) {
-            provinces++;
-            queue<int> q;
-            q.push(i);
-            visited[i] = true;
-
-            while (!q.empty()) {
-                int node = q.front();
-                q.pop();
-
-                for (int neigh : adj[node]) {
-                    if (!visited[neigh]) {
-                        visited[neigh] = true;
-                        q.push(neigh);
-                    }
+        // convert matrix to adjacency list
+        vector<vector<int>> adj(v);
+        for(int i = 0; i < v; i++) {
+            for(int j = 0; j < v; j++) {
+                if(isConnected[i][j] == 1 && i != j) {
+                    adj[i].push_back(j);
                 }
             }
         }
+
+        vector<int> vis(v, 0);
+        int count = 0;
+
+        // count connected components
+        for(int i = 0; i < v; i++) {
+            if(!vis[i]) {
+                dfs(i, adj, vis);
+                count++;
+            }
+        }
+        return count;
     }
-    return provinces;
-}
-
-
 };
+
