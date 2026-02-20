@@ -1,33 +1,44 @@
 class Solution {
-public:
-    void dfs(vector<vector<char>>& grid, int i, int j, int m, int n) {
-        // boundary check
-        if (i < 0 || i >= m || j < 0 || j >= n || grid[i][j] == '0') 
-            return;
+private:
+    void dfs(int x, int y,
+             vector<vector<char>>& grid,
+             vector<vector<int>>& visited,
+             int n, int m) {
 
-        // mark current cell as visited
-        grid[i][j] = '0';
+        visited[x][y] = 1;
 
-        // explore all 4 directions
-        dfs(grid, i + 1, j, m, n);
-        dfs(grid, i - 1, j, m, n);
-        dfs(grid, i, j + 1, m, n);
-        dfs(grid, i, j - 1, m, n);
-    }
+        int dx[4] = {1, -1, 0, 0};
+        int dy[4] = {0, 0, 1, -1};
 
-    int numIslands(vector<vector<char>>& grid) {
-        int m = grid.size();
-        int n = grid[0].size();
-        int count = 0;
+        for(int k = 0; k < 4; k++) {
+            int nx = x + dx[k];
+            int ny = y + dy[k];
 
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (grid[i][j] == '1') {
-                    count++;              // found a new island
-                    dfs(grid, i, j, m, n); // mark the entire island
-                }
+            if(nx >= 0 && ny >= 0 &&
+               nx < n && ny < m &&
+               grid[nx][ny] == '1' &&
+               !visited[nx][ny]) {
+
+                dfs(nx, ny, grid, visited, n, m);
             }
         }
+    }
+public:
+    int numIslands(vector<vector<char>>& grid) {
+        int n = grid.size();
+        int m = grid[0].size();
+         vector<vector<int>> visited(n, vector<int>(m, 0));
+        int count = 0;
+
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < m; j++) {
+                if(grid[i][j] == '1' && !visited[i][j]) {
+                    dfs(i, j, grid, visited, n, m);
+                      count++;
+                }
+                }
+        }
         return count;
+
     }
 };
