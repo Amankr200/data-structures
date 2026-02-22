@@ -1,0 +1,64 @@
+class Solution {
+public:
+
+    void dfs(int i, int j,
+             vector<vector<char>>& board,
+             vector<vector<int>>& vis) {
+
+        int n = board.size();
+        int m = board[0].size();
+
+        vis[i][j] = 1;
+
+        int dx[] = {-1, 0, 1, 0};
+        int dy[] = {0, 1, 0, -1};
+
+        for(int k = 0; k < 4; k++) {
+            int ni = i + dx[k];
+            int nj = j + dy[k];
+
+            if(ni >= 0 && nj >= 0 && ni < n && nj < m &&
+               !vis[ni][nj] && board[ni][nj] == 'O') {
+
+                dfs(ni, nj, board, vis);
+            }
+        }
+    }
+
+    void solve(vector<vector<char>>& board) {
+
+        int n = board.size();
+        if(n == 0) return;
+        int m = board[0].size();
+
+        vector<vector<int>> vis(n, vector<int>(m, 0));
+
+        // 🔹 Step 1: Traverse boundary
+
+        for(int i = 0; i < n; i++) {
+            if(board[i][0] == 'O' && !vis[i][0])
+                dfs(i, 0, board, vis);
+
+            if(board[i][m-1] == 'O' && !vis[i][m-1])
+                dfs(i, m-1, board, vis);
+        }
+
+        for(int j = 0; j < m; j++) {
+            if(board[0][j] == 'O' && !vis[0][j])
+                dfs(0, j, board, vis);
+
+            if(board[n-1][j] == 'O' && !vis[n-1][j])
+                dfs(n-1, j, board, vis);
+        }
+
+        // 🔹 Step 2: Replace unvisited O's
+
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < m; j++) {
+
+                if(board[i][j] == 'O' && !vis[i][j])
+                    board[i][j] = 'X';
+            }
+        }
+    }
+};
